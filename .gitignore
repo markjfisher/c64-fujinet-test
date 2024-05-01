@@ -1,0 +1,7 @@
+# generated files
+dist/
+obj/
+build/
+
+# IDE files
+.vscode/
