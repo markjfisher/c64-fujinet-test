@@ -23,10 +23,11 @@ DISK_FILE = $(DIST_DIR)/$(PROGRAM).d64
 # TESTING / EMULATOR
 
 c64_EMUCMD    := $(VICE_HOME)/x64sc
-c128_EMUCMD   := $(VICE_HOME)/x128 -kernal kernal -VICIIdsize -autoload
-c16_EMUCMD    := $(VICE_HOME)/xvic -kernal kernal -VICdsize -autoload
-pet_EMUCMD    := $(VICE_HOME)/xpet -Crtcdsize -autoload
-plus4_EMUCMD  := $(VICE_HOME)/xplus4 -TEDdsize -autoload
-x16_EMUCMD    := $(VICE_HOME)/xplus4 -ramsize 16 -TEDdsize -autoload
-cbm510_EMUCMD := $(VICE_HOME)/xcbm2 -model 510 -VICIIdsize -autoload
-cbm610_EMUCMD := $(VICE_HOME)/xcbm2 -model 610 -Crtcdsize -autoload
+c128_EMUCMD   := $(VICE_HOME)/x128
+c16_EMUCMD    := $(VICE_HOME)/xvic
+pet_EMUCMD    := $(VICE_HOME)/xpet
+plus4_EMUCMD  := $(VICE_HOME)/xplus4
+vic20_EMUCMD  := $(VICE_HOME)/xvic
+#x16_EMUCMD    := $(VICE_HOME)/xplus4 -ramsize 16
+cbm510_EMUCMD := $(VICE_HOME)/xcbm5x0
+cbm610_EMUCMD := $(VICE_HOME)/xcbm2
