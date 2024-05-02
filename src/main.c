@@ -9,5 +9,5 @@ int main() {
 }
 
 void hi() {
-	printf("hello, world!");
+	printf("hello, world #2!");
 }

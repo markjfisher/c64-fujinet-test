@@ -165,6 +165,12 @@ test: $(PROGRAM_TGT)
 	$(EMUCMD) $(BUILD_DIR)\\$<
 	$(POSTEMUCMD)
 
+test-disk: disk
+	$(PREEMUCMD)
+	$(EMUCMD) $(DISK_FILE)
+	$(POSTEMUCMD)
+
+
 # Use "./" in front of all dirs being removed as a simple safety guard to ensure deleting from current dir, and not something like root "/".
 clean:
 	@for d in $(BUILD_DIR) $(OBJDIR) $(DIST_DIR); do \

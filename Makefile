@@ -6,7 +6,7 @@
 TARGETS = c64
 PROGRAM := test1
 
-SUB_TASKS := clean disk test release
+SUB_TASKS := clean disk test test-disk release
 .PHONY: all help $(SUB_TASKS)
 
 all:
