@@ -5,3 +5,6 @@ build/
 
 # IDE files
 .vscode/
+
+# downloaded files
+_libs/
