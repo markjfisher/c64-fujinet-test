@@ -4,7 +4,7 @@
 # See makefiles/build.mk for details on directory structure for src files and how to add custom extensions to the build.
 
 TARGETS = c64
-PROGRAM := test1
+PROGRAM := ft
 
 SUB_TASKS := clean disk test test-disk release
 .PHONY: all help $(SUB_TASKS)

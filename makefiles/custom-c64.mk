@@ -16,8 +16,8 @@ DISK_FILE = $(DIST_DIR)/$(PROGRAM).d64
 .create-d64:
 	@echo "creating $(DISK_FILE)"
 	c1541 -format "$(PROGRAM),01" d64 $(DISK_FILE)
-	@echo "copying $(DIST_DIR)/$(PROGRAM_TGT)$(SUFFIX) as $(PROGRAM_TGT)$(SUFFIX)"
-	c1541 -attach $(DISK_FILE) -write $(DIST_DIR)/$(PROGRAM_TGT)$(SUFFIX) $(PROGRAM_TGT)$(SUFFIX)
+	@echo "copying $(DIST_DIR)/$(PROGRAM_TGT)$(SUFFIX) as $(PROGRAM)$(SUFFIX)"
+	c1541 -attach $(DISK_FILE) -write $(DIST_DIR)/$(PROGRAM_TGT)$(SUFFIX) $(PROGRAM)$(SUFFIX)
 
 ################################################################
 # TESTING / EMULATOR
