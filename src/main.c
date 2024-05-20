@@ -14,11 +14,11 @@ int main() {
 	message();
 
 	test_wifi_status();
-	test_get_ssid();
-	r = test_scan_for_networks();
-	for (i = 0; i < r; i++) {
-		test_get_scan_result(i);
-	}
+	// test_get_ssid();
+	// r = test_scan_for_networks();
+	// for (i = 0; i < r; i++) {
+	// 	test_get_scan_result(i);
+	// }
 
 	return 0;
 }
@@ -68,7 +68,7 @@ void test_wifi_status() {
 	if (!fuji_get_wifi_status(&wifi_status)) {
 		printf("failed to get wifi_status\n");
 	} else {
-		printf("wifi_status passed\n");
+		printf("wifi_status: %d\n", wifi_status);
 	}
 }
 

@@ -33,7 +33,7 @@ SHELL := /usr/bin/env bash
 ALL_TASKS =
 DISK_TASKS =
 
--include makefiles/os.mk
+-include ./makefiles/os.mk
 
 CC := cl65
 
@@ -62,14 +62,15 @@ SOURCES_TG += $(call rwildcard,$(SRCDIR)/$(CURRENT_TARGET)/,*.c)
 SOURCES := $(strip $(SOURCES))
 SOURCES_TG := $(strip $(SOURCES_TG))
 
-# convert from src/your/long/path/foo.[c|s] to obj/your/long/path/foo.o
+# convert from src/your/long/path/foo.[c|s] to obj/<target>/your/long/path/foo.o
+# we need the target because compiling for previous target does not pick up potential macro changes
 OBJ1 := $(SOURCES:.c=.o)
 OBJECTS := $(OBJ1:.s=.o)
-OBJECTS := $(OBJECTS:$(SRCDIR)/%=$(OBJDIR)/%)
+OBJECTS := $(OBJECTS:$(SRCDIR)/%=$(OBJDIR)/$(CURRENT_TARGET)/%)
 
 OBJ2 := $(SOURCES_TG:.c=.o)
 OBJECTS_TG := $(OBJ2:.s=.o)
-OBJECTS_TG := $(OBJECTS_TG:$(SRCDIR)/%=$(OBJDIR)/%)
+OBJECTS_TG := $(OBJECTS_TG:$(SRCDIR)/%=$(OBJDIR)/$(CURRENT_TARGET)/%)
 
 OBJECTS += $(OBJECTS_TG)
 
@@ -86,6 +87,9 @@ CFLAGS += --include-dir $(SRCDIR)
 -include ./makefiles/common.mk
 -include ./makefiles/custom-$(CURRENT_PLATFORM).mk
 
+# allow for application specific config
+-include ./application.mk
+
 define _listing_
   CFLAGS += --listing $$(@:.o=.lst)
   ASFLAGS += --listing $$(@:.o=.lst)
@@ -98,6 +102,15 @@ endef
 define _labelfile_
   LDFLAGS += -Ln $$@.lbl
 endef
+
+.SUFFIXES:
+.PHONY: all clean release $(DISK_TASKS) $(BUILD_TASKS) $(PROGRAM_TGT) $(ALL_TASKS)
+
+all: $(ALL_TASKS) $(PROGRAM_TGT)
+
+STATEFILE := Makefile.options
+-include $(DEPENDS)
+-include $(STATEFILE)
 
 ifeq ($(origin _OPTIONS_),file)
 OPTIONS = $(_OPTIONS_)
@@ -119,15 +132,6 @@ ifeq ($(DIST_DIR),)
 DIST_DIR := dist
 endif
 
-.SUFFIXES:
-.PHONY: all clean release $(DISK_TASKS) $(BUILD_TASKS) $(PROGRAM).$(CURRENT_TARGET)
-
-all: $(ALL_TASKS) $(PROGRAM_TGT)
-
-STATEFILE := Makefile.options
--include $(DEPENDS)
--include $(STATEFILE)
-
 $(OBJDIR):
 	$(call MKDIR,$@)
 
@@ -144,13 +148,13 @@ SRC_INC_DIRS := \
 
 vpath %.c $(SRC_INC_DIRS)
 
-$(OBJDIR)/%.o: %.c $(VERSION_FILE) | $(OBJDIR)
+$(OBJDIR)/$(CURRENT_TARGET)/%.o: %.c $(VERSION_FILE) | $(OBJDIR)
 	@$(call MKDIR,$(dir $@))
 	$(CC) -t $(CURRENT_TARGET) -c --create-dep $(@:.o=.d) $(CFLAGS) -o $@ $<
 
 vpath %.s $(SRC_INC_DIRS)
 
-$(OBJDIR)/%.o: %.s $(VERSION_FILE) | $(OBJDIR)
+$(OBJDIR)/$(CURRENT_TARGET)/%.o: %.s $(VERSION_FILE) | $(OBJDIR)
 	@$(call MKDIR,$(dir $@))
 	$(CC) -t $(CURRENT_TARGET) -c --create-dep $(@:.o=.d) $(ASFLAGS) -o $@ $<
 
@@ -165,13 +169,8 @@ test: $(PROGRAM_TGT)
 	$(EMUCMD) $(BUILD_DIR)\\$<
 	$(POSTEMUCMD)
 
-test-disk: disk
-	$(PREEMUCMD)
-	$(EMUCMD) $(DISK_FILE)
-	$(POSTEMUCMD)
-
-
-# Use "./" in front of all dirs being removed as a simple safety guard to ensure deleting from current dir, and not something like root "/".
+# Use "./" in front of all dirs being removed as a simple safety guard to
+# ensure deleting from current dir, and not something like root "/".
 clean:
 	@for d in $(BUILD_DIR) $(OBJDIR) $(DIST_DIR); do \
       if [ -d "./$$d" ]; then \
